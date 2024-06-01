@@ -3,6 +3,8 @@
   imports = [
     ./plugins.nix
     ./colorscheme.nix
-    ./lsp.nix
+    ./lsp
+    ./completion
+    ./snippets
   ];
 }
