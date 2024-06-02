@@ -1,4 +1,4 @@
-{self, ...}: {
+{
   options = {
     number = true;
     relativenumber = true;
