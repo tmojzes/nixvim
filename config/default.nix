@@ -6,5 +6,6 @@
     ./lsp
     ./completion
     ./snippets
+    ./ui
   ];
 }
