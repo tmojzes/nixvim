@@ -8,5 +8,6 @@
     indent-blankline.enable = true;
     lazygit.enable = true;
     lualine.enable = true;
+    which-key.enable = true;
   };
 }
