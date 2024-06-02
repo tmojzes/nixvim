@@ -9,5 +9,6 @@
     ./completion
     ./snippets
     ./ui
+    ./treesitter
   ];
 }
