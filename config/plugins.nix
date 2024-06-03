@@ -9,5 +9,6 @@
     lazygit.enable = true;
     lualine.enable = true;
     which-key.enable = true;
+    neo-tree.enable = true;
   };
 }
