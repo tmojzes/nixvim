@@ -10,5 +10,12 @@
     lualine.enable = true;
     which-key.enable = true;
     neo-tree.enable = true;
+    # Mini config
+    mini = {
+      enable = true;
+      modules = {
+        pairs = {};
+      };
+    };
   };
 }
