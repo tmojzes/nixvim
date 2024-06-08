@@ -33,6 +33,16 @@
         };
         stylua.enable = true;
         yamlfmt.enable = true;
+        goimports.enable = true;
+        gofumpt.enable = true;
+        golines = {
+          enable = true;
+          withArgs = ''
+            {
+                extra_args = { "-m 110" },
+            }
+          '';
+        };
       };
     };
   };
