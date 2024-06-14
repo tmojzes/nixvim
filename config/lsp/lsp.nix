@@ -30,6 +30,7 @@
         terraformls.enable = true;
         yamlls.enable = true;
         zls.enable = true;
+        sourcekit.enable = true;
       };
       keymaps = {
         silent = true;
