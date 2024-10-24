@@ -17,5 +17,7 @@
         pairs = {};
       };
     };
+
+    web-devicons.enable = true;
   };
 }
