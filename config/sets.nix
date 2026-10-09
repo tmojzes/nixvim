@@ -1,89 +1,125 @@
 {
   config = {
     opts = {
-      # Enable relative line numbers
+      # Line numbers
       number = true;
-      relativenumber = true;
+      relativenumber = false;
 
-      # Set tabs to 2 spaces
+      # Tab and indentation
       tabstop = 4;
       softtabstop = 4;
-      showtabline = 4;
+      showtabline = 2;
       expandtab = true;
-
-      # Enable auto indenting and set it to spaces
       smartindent = true;
       shiftwidth = 4;
 
-      # Enable smart indenting (see https://stackoverflow.com/questions/1204149/smart-wrap-in-vim)
+      # Enable smart indenting
       breakindent = true;
 
-      # Enable incremental searching
+      # Searching
       hlsearch = true;
       incsearch = true;
-
-      # Enable text wrap
-      wrap = true;
-
-      # Better splitting
-      splitbelow = true;
-      splitright = true;
-
-      # Enable mouse mode
-      mouse = "a"; # Mouse
-
-      # Enable ignorecase + smartcase for better searching
       ignorecase = true;
       smartcase = true; # Don't ignore case with capitals
       grepprg = "rg --vimgrep";
       grepformat = "%f:%l:%c:%m";
 
-      # Decrease updatetime
-      updatetime = 50; # faster completion (4000ms default)
+      # Clipboard
+      clipboard = "unnamedplus";
 
-      # Set completeopt to have a better completion experience
-      completeopt = ["menuone" "noselect" "noinsert"]; # mostly just for cmp
+      # Better splitting
+      splitbelow = true;
+      splitright = true;
 
-      # Enable persistent undo history
+      # Mouse mode
+      mouse = "a";
+
+      # Updatetime
+      updatetime = 50;
+
+      # Completion experience
+      completeopt = ["menuone" "noselect" "noinsert"];
+
+      # Undo history
       swapfile = false;
       backup = false;
       undofile = true;
 
-      # Enable 24-bit colors
+      # 24-bit colors
       termguicolors = true;
+      background = "dark";
 
-      # Enable the sign column to prevent the screen from jumping
-      # signcolumn = "yes";
+      # Cursor line highlight
+      cursorline = true;
 
-      # Enable cursor line highlight
-      cursorline = true; # Highlight the line where the cursor is located
-
-      # Set fold settings
-      # These options were reccommended by nvim-ufo
-      # See: https://github.com/kevinhwang91/nvim-ufo#minimal-configuration
+      # Fold settings
       foldcolumn = "0";
+      foldmethod = "indent";
       foldlevel = 99;
       foldlevelstart = 99;
       foldenable = true;
 
-      # Always keep 8 lines above/below cursor unless at start/end of file
+      # Always keep 8 lines above/below cursor
       scrolloff = 8;
 
-      # Place a column line
+      # Column marker
       colorcolumn = "110";
 
-      # Reduce which-key timeout to 10ms
-      timeoutlen = 10;
+      # Timeout for key sequences
+      timeoutlen = 300;
 
-      # Set encoding type
+      # Encoding
       encoding = "utf-8";
       fileencoding = "utf-8";
 
-      # More space in the neovim command line for displaying messages
+      # Command line display
       cmdheight = 0;
-
-      # We don't need to see things like INSERT anymore
       showmode = false;
     };
+
+    globals = {
+      lazyvim_python_ruff = "ruff";
+      lazyvim_python_lsp = "ruff";
+    };
+
+    extraConfigLua = ''
+      -- Add templ file extension to support go templ.
+      vim.filetype.add({
+      	extension = {
+      		templ = "templ",
+      	},
+      })
+
+      -- Add filetypes for ansible.
+      vim.filetype.add({
+      	pattern = {
+      		[".*/defaults/.*%.ya?ml"] = "yaml.ansible",
+      		[".*/host_vars/.*%.ya?ml"] = "yaml.ansible",
+      		[".*/group_vars/.*%.ya?ml"] = "yaml.ansible",
+      		[".*/group_vars/.*/.*%.ya?ml"] = "yaml.ansible",
+      		[".*/playbook.*%.ya?ml"] = "yaml.ansible",
+      		[".*/playbooks/.*%.ya?ml"] = "yaml.ansible",
+      		[".*/roles/.*/tasks/.*%.ya?ml"] = "yaml.ansible",
+      		[".*/roles/.*/handlers/.*%.ya?ml"] = "yaml.ansible",
+      		[".*/tasks/.*%.ya?ml"] = "yaml.ansible",
+      		[".*/molecule/.*%.ya?ml"] = "yaml.ansible",
+      	},
+      })
+
+      -- Use OSC 52 for clipboard when SSHing (works in Ghostty + Tmux)
+      if vim.env.SSH_TTY or vim.env.SSH_CONNECTION then
+      	vim.g.clipboard = {
+      		name = "OSC 52",
+      		copy = {
+      			["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+      			["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+      		},
+      		paste = {
+      			["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+      			["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+      		},
+      	}
+      end
+    '';
   };
 }

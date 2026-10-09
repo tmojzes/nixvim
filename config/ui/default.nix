@@ -1,7 +1,7 @@
 {
   imports = [
     ./bufferline.nix
-    ./alpha.nix
+    ./dropbar.nix
     ./noice.nix
     ./nvim-notify.nix
     ./telescope.nix

@@ -1,6 +1,33 @@
 {
   plugins.bufferline = {
     enable = true;
+    settings = {
+      options = {
+        always_show_bufferline = false;
+        diagnostics = "nvim_lsp";
+        numbers = "none";
+        close_command.__raw = "function(n) Snacks.bufdelete(n) end";
+        right_mouse_command.__raw = "function(n) Snacks.bufdelete(n) end";
+        diagnostics_indicator.__raw = ''
+          function(_, _, diag)
+            local ret = (diag.error and " " .. diag.error .. " " or "")
+              .. (diag.warning and " " .. diag.warning or "")
+            return vim.trim(ret)
+          end
+        '';
+        offsets = [
+          {
+            filetype = "neo-tree";
+            text = "Neo-tree";
+            highlight = "Directory";
+            text_align = "left";
+          }
+          {
+            filetype = "snacks_layout_box";
+          }
+        ];
+      };
+    };
   };
   keymaps = [
     {
@@ -42,7 +69,7 @@
     {
       mode = "n";
       key = "<leader>bd";
-      action = "<cmd>bdelete<cr>";
+      action = "<cmd>lua Snacks.bufdelete()<cr>";
       options = {
         desc = "Delete buffer";
       };

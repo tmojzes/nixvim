@@ -125,43 +125,77 @@
       };
     }
 
+    # Visual mode paste without overwriting register
+    {
+      mode = "x";
+      key = "p";
+      action = "P";
+      options = {
+        desc = "Paste without yanking selected text";
+      };
+    }
+
+    # AI (Agentic)
     {
       mode = "n";
-      key = "<C-h>";
-      action = "<C-W>h";
+      key = "<leader>a";
+      action = "+ai";
+    }
+
+    {
+      mode = "n";
+      key = "<leader>ac";
+      action = "<cmd>lua require('agentic').toggle()<cr>";
       options = {
-        silent = true;
-        desc = "Move to window left";
+        desc = "Toggle Agentic Chat";
+      };
+    }
+
+    {
+      mode = ["n" "v"];
+      key = "<leader>aa";
+      action = "<cmd>lua require('agentic').add_selection_or_file_to_context()<cr>";
+      options = {
+        desc = "Add file or selection to Agentic Context";
       };
     }
 
     {
       mode = "n";
-      key = "<C-l>";
-      action = "<C-W>l";
+      key = "<leader>an";
+      action = "<cmd>lua require('agentic').new_session()<cr>";
       options = {
-        silent = true;
-        desc = "Move to window right";
+        desc = "New Agentic Session";
       };
     }
 
     {
       mode = "n";
-      key = "<C-k>";
-      action = "<C-W>k";
+      key = "<leader>ar";
+      action = "<cmd>lua require('agentic').restore_session()<cr>";
       options = {
         silent = true;
-        desc = "Move to window over";
+        desc = "Agentic Restore Session";
       };
     }
 
+    # Symbols Outline
     {
       mode = "n";
-      key = "<C-j>";
-      action = "<C-W>j";
+      key = "<leader>cs";
+      action = "<cmd>SymbolsOutline<cr>";
       options = {
-        silent = true;
-        desc = "Move to window bellow";
+        desc = "Symbols Outline";
+      };
+    }
+
+    # Yanky history
+    {
+      mode = "n";
+      key = "<leader>p";
+      action = "<cmd>Telescope yank_history<cr>";
+      options = {
+        desc = "Yank History";
       };
     }
 
@@ -217,8 +251,29 @@
     {
       mode = "n";
       key = "<leader>e";
-      action = "<CMD>Neotree<CR>";
-      options = {desc = "Open Neotree";};
+      action = "<cmd>lua Snacks.explorer()<cr>";
+      options = {desc = "Explorer Snacks (root dir)";};
+    }
+
+    {
+      mode = "n";
+      key = "<leader>E";
+      action = "<cmd>lua Snacks.explorer()<cr>";
+      options = {desc = "Explorer Snacks (cwd)";};
+    }
+
+    {
+      mode = "n";
+      key = "<leader>fe";
+      action = "<cmd>lua Snacks.explorer()<cr>";
+      options = {desc = "Explorer Snacks (root dir)";};
+    }
+
+    {
+      mode = "n";
+      key = "<leader>fE";
+      action = "<cmd>lua Snacks.explorer()<cr>";
+      options = {desc = "Explorer Snacks (cwd)";};
     }
 
     {
@@ -226,6 +281,83 @@
       key = "<leader>gg";
       action = "<CMD>LazyGit<CR>";
       options = {desc = "Open Lazygit";};
+    }
+
+    # Search and Replace (grug-far)
+    {
+      mode = ["n" "v"];
+      key = "<leader>sr";
+      action.__raw = ''
+        function()
+          local grug = require("grug-far")
+          local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+          grug.open({
+            transient = true,
+            prefills = {
+              filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+            },
+          })
+        end
+      '';
+      options = {desc = "Search and Replace";};
+    }
+
+    {
+      mode = ["n" "v"];
+      key = "<leader>sR";
+      action.__raw = ''
+        function()
+          require("grug-far").open({
+            transient = true,
+          })
+        end
+      '';
+      options = {desc = "Search and Replace (all files)";};
+    }
+
+    # Code formatting (conform)
+    {
+      mode = ["n" "v"];
+      key = "<leader>cf";
+      action.__raw = ''
+        function()
+          require("conform").format({ async = true, lsp_fallback = true })
+        end
+      '';
+      options = {desc = "Format buffer";};
+    }
+
+    {
+      mode = ["n" "v"];
+      key = "<leader>cF";
+      action.__raw = ''
+        function()
+          require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
+        end
+      '';
+      options = {desc = "Format Injected Langs";};
+    }
+
+    # Flash navigation
+    {
+      mode = ["n" "x" "o"];
+      key = "s";
+      action.__raw = ''function() require("flash").jump() end'';
+      options = {desc = "Flash";};
+    }
+
+    {
+      mode = ["n" "x" "o"];
+      key = "S";
+      action.__raw = ''function() require("flash").treesitter() end'';
+      options = {desc = "Flash Treesitter";};
+    }
+
+    {
+      mode = "o";
+      key = "r";
+      action.__raw = ''function() require("flash").remote() end'';
+      options = {desc = "Remote Flash";};
     }
   ];
   extraConfigLua = ''

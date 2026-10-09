@@ -1,8 +1,9 @@
-{
+{pkgs, ...}: {
   plugins = {
-    lsp-format = {enable = true;};
     lsp = {
       enable = true;
+      inlayHints = false;
+
       servers = {
         ts_ls.enable = true;
         lua_ls.enable = true;
@@ -21,23 +22,89 @@
         html.enable = true;
         htmx.enable = true;
         jsonls.enable = true;
-        ocamllsp = {
-          enable = true;
-          package = null;
-        };
         nixd.enable = true;
-        pylsp.enable = true;
         pyright.enable = true;
+        ruff.enable = true;
         sqls.enable = true;
-        tailwindcss.enable = true;
         templ.enable = true;
         terraformls.enable = true;
         yamlls.enable = true;
         zls.enable = true;
-        sourcekit.enable = true;
-        bufls.enable = true;
         ols.enable = true;
-        starlark_rust.enable = true;
+        ansiblels = {
+          enable = true;
+          package = pkgs.ansible-language-server;
+        };
+        jinja_lsp.enable = true;
+        marksman.enable = true;
+        elixirls.enable = false;
+
+        cssls = {
+          enable = true;
+          filetypes = [
+            "css"
+            "scss"
+            "less"
+          ];
+        };
+
+        tailwindcss = {
+          enable = true;
+          rootMarkers = [
+            ".git"
+          ];
+          filetypes = [
+            "aspnetcorerazor"
+            "astro"
+            "astro-markdown"
+            "blade"
+            "clojure"
+            "django-html"
+            "htmldjango"
+            "edge"
+            "eelixir"
+            "elixir"
+            "ejs"
+            "erb"
+            "eruby"
+            "gohtml"
+            "gohtmltmpl"
+            "haml"
+            "handlebars"
+            "hbs"
+            "html"
+            "html-eex"
+            "heex"
+            "jade"
+            "leaf"
+            "liquid"
+            "markdown"
+            "mdx"
+            "mustache"
+            "njk"
+            "nunjucks"
+            "php"
+            "razor"
+            "slim"
+            "twig"
+            "css"
+            "less"
+            "postcss"
+            "sass"
+            "scss"
+            "stylus"
+            "sugarss"
+            "javascript"
+            "javascriptreact"
+            "reason"
+            "rescript"
+            "typescript"
+            "typescriptreact"
+            "vue"
+            "svelte"
+            "templ"
+          ];
+        };
       };
 
       keymaps = {
@@ -93,27 +160,59 @@
       };
     };
   };
+
   extraConfigLua = ''
     local _border = "rounded"
 
-    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-      vim.lsp.handlers.hover, {
-        border = _border
+    vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+      config = vim.tbl_extend("force", config or {}, { border = _border })
+      return vim.lsp.handlers.hover(err, result, ctx, config)
+    end
+
+    vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
+      config = vim.tbl_extend("force", config or {}, { border = _border })
+      return vim.lsp.handlers.signature_help(err, result, ctx, config)
+    end
+
+    vim.diagnostic.config({
+      underline = true,
+      update_in_insert = false,
+      virtual_text = {
+        spacing = 4,
+        source = "if_many",
+        prefix = "●",
+      },
+      severity_sort = true,
+      float = {
+        border = _border,
+      },
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = " ",
+          [vim.diagnostic.severity.WARN] = " ",
+          [vim.diagnostic.severity.HINT] = " ",
+          [vim.diagnostic.severity.INFO] = " ",
+        },
+      },
+    })
+
+    -- Elixir Expert language server setup from dotfiles
+    local configs = require("lspconfig.configs")
+    if not configs.expert then
+      configs.expert = {
+        default_config = {
+          cmd = { "expert" },
+          filetypes = { "elixir", "eelixir", "heex", "surface" },
+          root_dir = require("lspconfig.util").root_pattern("mix.exs", ".git"),
+          settings = {},
+        },
       }
-    )
-
-    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-      vim.lsp.handlers.signature_help, {
-        border = _border
-      }
-    )
-
-    vim.diagnostic.config{
-      float={border=_border}
-    };
-
-    require('lspconfig.ui.windows').default_options = {
-      border = _border
-    }
+    end
+    require("lspconfig").expert.setup({
+      cmd = { "expert" },
+      filetypes = { "elixir", "eelixir", "heex", "surface" },
+      root_dir = require("lspconfig.util").root_pattern("mix.exs", ".git"),
+      settings = {},
+    })
   '';
 }

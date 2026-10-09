@@ -1,10 +1,12 @@
 {
   plugins.notify = {
     enable = true;
-    fps = 60;
-    render = "default";
-    timeout = 1000;
-    topDown = true;
+    settings = {
+      fps = 60;
+      render = "default";
+      timeout = 1000;
+      top_down = true;
+    };
   };
   keymaps = [
     {
