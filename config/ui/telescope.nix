@@ -121,6 +121,22 @@
           desc = "Workspace diagnostics";
         };
       };
+      "<leader>sg" = {
+        action = "live_grep";
+        options = {
+          desc = "Grep (root dir)";
+        };
+      };
+      "<leader>sw" = {
+        mode = [
+          "n"
+          "v"
+        ];
+        action = "grep_string";
+        options = {
+          desc = "Word (root dir)";
+        };
+      };
       "<leader>sh" = {
         action = "help_tags";
         options = {
