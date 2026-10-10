@@ -49,6 +49,7 @@
         words.enabled = true;
         picker.enabled = true;
         explorer.enabled = true;
+        terminal.enabled = true;
         dashboard = {
           enabled = true;
           preset = {

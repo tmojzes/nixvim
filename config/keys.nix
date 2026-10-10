@@ -283,6 +283,28 @@
       options = {desc = "Find Config File";};
     }
 
+    # Terminal
+    {
+      mode = ["n" "t"];
+      key = "<C-/>";
+      action = "<cmd>lua Snacks.terminal()<cr>";
+      options = {desc = "Toggle Terminal";};
+    }
+
+    {
+      mode = ["n" "t"];
+      key = "<C-_>";
+      action = "<cmd>lua Snacks.terminal()<cr>";
+      options = {desc = "Toggle Terminal";};
+    }
+
+    {
+      mode = "n";
+      key = "<leader>ft";
+      action = "<cmd>lua Snacks.terminal()<cr>";
+      options = {desc = "Terminal (Root Dir)";};
+    }
+
     {
       mode = "n";
       key = "<leader>gg";
