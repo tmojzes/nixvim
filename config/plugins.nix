@@ -53,12 +53,12 @@
           enabled = true;
           preset = {
             header = ''
-             ████████╗███╗   ███╗ ██████╗      ██╗███████╗███████╗███████╗   ███╗   ██╗██╗   ██╗██╗███╗   ███╗
-             ╚══██╔══╝████╗ ████║██╔═══██╗     ██║╚══███╔╝██╔════╝██╔════╝   ████╗  ██║██║   ██║██║████╗ ████║
-                ██║   ██╔████╔██║██║   ██║     ██║  ███╔╝ █████╗  ███████╗   ██╔██╗ ██║██║   ██║██║██╔████╔██║
-                ██║   ██║╚██╔╝██║██║   ██║██   ██║ ███╔╝  ██╔══╝  ╚════██║   ██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║
-                ██║   ██║ ╚═╝ ██║╚██████╔╝╚█████╔╝███████╗███████╗███████║██╗██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║
-                ╚═╝   ╚═╝     ╚═╝ ╚═════╝  ╚════╝ ╚══════╝╚══════╝╚══════╝╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝
+              ████████╗███╗   ███╗ ██████╗      ██╗███████╗███████╗███████╗   ███╗   ██╗██╗   ██╗██╗███╗   ███╗
+              ╚══██╔══╝████╗ ████║██╔═══██╗     ██║╚══███╔╝██╔════╝██╔════╝   ████╗  ██║██║   ██║██║████╗ ████║
+                 ██║   ██╔████╔██║██║   ██║     ██║  ███╔╝ █████╗  ███████╗   ██╔██╗ ██║██║   ██║██║██╔████╔██║
+                 ██║   ██║╚██╔╝██║██║   ██║██   ██║ ███╔╝  ██╔══╝  ╚════██║   ██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║
+                 ██║   ██║ ╚═╝ ██║╚██████╔╝╚█████╔╝███████╗███████╗███████║██╗██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║
+                 ╚═╝   ╚═╝     ╚═╝ ╚═════╝  ╚════╝ ╚══════╝╚══════╝╚══════╝╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝
             '';
             keys = [
               {
@@ -95,7 +95,7 @@
                 icon = " ";
                 key = "c";
                 desc = "Config";
-                action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})";
+                action = ":lua OpenNixvimConfig()";
               }
               {
                 icon = " ";
@@ -312,6 +312,38 @@
     vim.api.nvim_create_user_command("LazyExtras", function()
       Snacks.notify.info("Manage extras and configurations declaratively in your Nixvim flake.", { title = "Lazy Extras" })
     end, { desc = "Nixvim extras" })
+
+    -- Open Nixvim / user config directory in Snacks picker
+    local function get_config_dir()
+      local candidates = {}
+      if vim.env.NIXVIM_CONFIG_DIR then
+        table.insert(candidates, vim.env.NIXVIM_CONFIG_DIR)
+      end
+      if vim.fn.isdirectory(vim.fn.stdpath("config")) == 1 then
+        table.insert(candidates, vim.fn.stdpath("config"))
+      end
+      table.insert(candidates, vim.fn.expand("~/projects/personal/nixvim"))
+      table.insert(candidates, vim.fn.expand("~/.config/nixvim"))
+      table.insert(candidates, vim.fn.expand("~/dotfiles/nvim/.config/nvim"))
+      table.insert(candidates, vim.fn.expand("~/dotfiles/nix"))
+      table.insert(candidates, vim.fn.expand("~/dotfiles"))
+
+      for _, dir in ipairs(candidates) do
+        if dir and dir ~= "" and vim.fn.isdirectory(dir) == 1 then
+          return dir
+        end
+      end
+      return nil
+    end
+
+    _G.OpenNixvimConfig = function()
+      local dir = get_config_dir()
+      if dir then
+        Snacks.dashboard.pick("files", { cwd = dir })
+      else
+        Snacks.notify.warn("Config directory not found. Please set $NIXVIM_CONFIG_DIR or ensure the config directory exists.", { title = "Config" })
+      end
+    end
 
     -- Hide statusline on the dashboard starter page, restore on buffer enter
     if vim.fn.argc(-1) == 0 then

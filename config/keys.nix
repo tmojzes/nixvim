@@ -278,6 +278,13 @@
 
     {
       mode = "n";
+      key = "<leader>fc";
+      action = "<cmd>lua OpenNixvimConfig()<cr>";
+      options = {desc = "Find Config File";};
+    }
+
+    {
+      mode = "n";
       key = "<leader>gg";
       action = "<CMD>LazyGit<CR>";
       options = {desc = "Open Lazygit";};
