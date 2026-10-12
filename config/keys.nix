@@ -28,6 +28,12 @@
     }
 
     {
+      mode = ["n" "v"];
+      key = "<leader>gh";
+      action = "+hunks";
+    }
+
+    {
       mode = "n";
       key = "<leader>u";
       action = "+ui";
@@ -310,6 +316,20 @@
       key = "<leader>gg";
       action = "<CMD>LazyGit<CR>";
       options = {desc = "Open Lazygit";};
+    }
+
+    {
+      mode = "n";
+      key = "<leader>gb";
+      action.__raw = "function() Snacks.picker.git_log_line() end";
+      options = {desc = "Git Blame Line";};
+    }
+
+    {
+      mode = ["n" "v"];
+      key = "<leader>gB";
+      action.__raw = "function() Snacks.gitbrowse() end";
+      options = {desc = "Git Browse (open)";};
     }
 
     # Search and Replace (grug-far)

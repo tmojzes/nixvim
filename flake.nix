@@ -22,10 +22,7 @@
         "aarch64-darwin"
       ];
 
-      perSystem = {
-        system,
-        ...
-      }: let
+      perSystem = {system, ...}: let
         pkgs = import inputs.nixpkgs {
           inherit system;
           config.allowUnfree = true;
