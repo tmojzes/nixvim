@@ -217,6 +217,24 @@
       };
     }
 
+    # Markdown Preview (browser)
+    {
+      mode = "n";
+      key = "<leader>cp";
+      action.__raw = ''
+        function()
+          if vim.fn.exists(":MarkdownPreviewToggle") == 2 then
+            vim.cmd("MarkdownPreviewToggle")
+          else
+            vim.notify("Markdown Preview is only available for markdown files", vim.log.levels.WARN, { title = "Markdown Preview" })
+          end
+        end
+      '';
+      options = {
+        desc = "Markdown Preview";
+      };
+    }
+
     # Yanky history
     {
       mode = "n";

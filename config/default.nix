@@ -10,6 +10,7 @@
     ./snippets
     ./ui
     ./treesitter
+    ./markdown
     ./ai
   ];
 
@@ -41,5 +42,6 @@
     fd
     xmlstarlet
     buf
+    nodejs
   ];
 }
