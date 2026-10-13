@@ -141,6 +141,28 @@
       };
     }
 
+    # Clear search and stop snippet on escape
+    {
+      mode = ["i" "n" "s"];
+      key = "<esc>";
+      action.__raw = ''
+        function()
+          vim.cmd("noh")
+          if vim.snippet then
+            vim.snippet.stop()
+          end
+          if package.loaded.luasnip and package.loaded.luasnip.expand_or_jumpable() then
+            package.loaded.luasnip.unlink_current()
+          end
+          return "<esc>"
+        end
+      '';
+      options = {
+        expr = true;
+        desc = "Escape and Clear hlsearch";
+      };
+    }
+
     # AI (Agentic)
     {
       mode = "n";
@@ -243,6 +265,15 @@
       options = {
         silent = true;
         desc = "Toggle Line Wrap";
+      };
+    }
+
+    {
+      mode = "n";
+      key = "<leader>ur";
+      action = "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>";
+      options = {
+        desc = "Redraw / Clear hlsearch / Diff Update";
       };
     }
 
