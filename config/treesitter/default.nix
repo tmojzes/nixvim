@@ -1,6 +1,6 @@
 {
   imports = [
     ./treesitter.nix
-    ./treesitter-textobjects.nix
+    ./textobjects.nix
   ];
 }

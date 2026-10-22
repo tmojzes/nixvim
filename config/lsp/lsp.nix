@@ -1,218 +1,110 @@
-{pkgs, ...}: {
-  plugins = {
-    lsp = {
-      enable = true;
-      inlayHints = false;
+let
+  picker = source: "function() Snacks.picker.${source}() end";
 
-      servers = {
-        ts_ls.enable = true;
-        lua_ls.enable = true;
+  jump = key: count: severity: desc: {
+    mode = "n";
+    inherit key;
+    action.__raw = "function() vim.diagnostic.jump({ count = ${count}, float = true, severity = ${severity} }) end";
+    options.desc = desc;
+  };
+in {
+  # Servers are enabled per language in ./lang; nvim-lspconfig provides their defaults
+  plugins.lspconfig.enable = true;
 
-        rust_analyzer = {
-          enable = true;
-          installCargo = true;
-          installRustc = true;
-        };
-
-        bashls.enable = true;
-        clangd.enable = true;
-        dockerls.enable = true;
-        gopls.enable = true;
-        helm_ls.enable = true;
-        html.enable = true;
-        htmx.enable = true;
-        jsonls.enable = true;
-        nixd.enable = true;
-        pyright.enable = true;
-        ruff.enable = true;
-        sqls.enable = true;
-        templ.enable = true;
-        terraformls.enable = true;
-        yamlls.enable = true;
-        zls.enable = true;
-        ols.enable = true;
-        ansiblels = {
-          enable = true;
-          package = pkgs.ansible-language-server;
-        };
-        jinja_lsp.enable = true;
-        marksman.enable = true;
-        elixirls.enable = false;
-
-        cssls = {
-          enable = true;
-          filetypes = [
-            "css"
-            "scss"
-            "less"
-          ];
-        };
-
-        tailwindcss = {
-          enable = true;
-          rootMarkers = [
-            ".git"
-          ];
-          filetypes = [
-            "aspnetcorerazor"
-            "astro"
-            "astro-markdown"
-            "blade"
-            "clojure"
-            "django-html"
-            "htmldjango"
-            "edge"
-            "eelixir"
-            "elixir"
-            "ejs"
-            "erb"
-            "eruby"
-            "gohtml"
-            "gohtmltmpl"
-            "haml"
-            "handlebars"
-            "hbs"
-            "html"
-            "html-eex"
-            "heex"
-            "jade"
-            "leaf"
-            "liquid"
-            "markdown"
-            "mdx"
-            "mustache"
-            "njk"
-            "nunjucks"
-            "php"
-            "razor"
-            "slim"
-            "twig"
-            "css"
-            "less"
-            "postcss"
-            "sass"
-            "scss"
-            "stylus"
-            "sugarss"
-            "javascript"
-            "javascriptreact"
-            "reason"
-            "rescript"
-            "typescript"
-            "typescriptreact"
-            "vue"
-            "svelte"
-            "templ"
-          ];
-        };
+  lsp.keymaps = [
+    {
+      key = "gd";
+      action.__raw = picker "lsp_definitions";
+      options.desc = "Goto Definition";
+    }
+    {
+      key = "gD";
+      action.__raw = picker "lsp_declarations";
+      options.desc = "Goto Declaration";
+    }
+    {
+      key = "gr";
+      action.__raw = picker "lsp_references";
+      options = {
+        desc = "References";
+        nowait = true;
       };
+    }
+    {
+      key = "gI";
+      action.__raw = picker "lsp_implementations";
+      options.desc = "Goto Implementation";
+    }
+    {
+      key = "gy";
+      action.__raw = picker "lsp_type_definitions";
+      options.desc = "Goto Type Definition";
+    }
+    {
+      key = "gK";
+      lspBufAction = "signature_help";
+      options.desc = "Signature Help";
+    }
+    {
+      mode = ["n" "v"];
+      key = "<leader>ca";
+      lspBufAction = "code_action";
+      options.desc = "Code Action";
+    }
+    {
+      key = "<leader>cr";
+      lspBufAction = "rename";
+      options.desc = "Rename";
+    }
+    {
+      key = "<leader>cl";
+      action = "<cmd>checkhealth vim.lsp<cr>";
+      options.desc = "Lsp Info";
+    }
+    {
+      key = "<leader>ss";
+      action.__raw = picker "lsp_symbols";
+      options.desc = "LSP Symbols";
+    }
+    {
+      key = "<leader>sS";
+      action.__raw = picker "lsp_workspace_symbols";
+      options.desc = "LSP Workspace Symbols";
+    }
+  ];
 
-      keymaps = {
-        silent = true;
-        lspBuf = {
-          gd = {
-            action = "definition";
-            desc = "Goto Definition";
-          };
-          gr = {
-            action = "references";
-            desc = "Goto References";
-          };
-          gD = {
-            action = "declaration";
-            desc = "Goto Declaration";
-          };
-          gI = {
-            action = "implementation";
-            desc = "Goto Implementation";
-          };
-          gT = {
-            action = "type_definition";
-            desc = "Type Definition";
-          };
-          K = {
-            action = "hover";
-            desc = "Hover";
-          };
-          "<leader>cw" = {
-            action = "workspace_symbol";
-            desc = "Workspace Symbol";
-          };
-          "<leader>cr" = {
-            action = "rename";
-            desc = "Rename";
-          };
-        };
-        diagnostic = {
-          "<leader>cd" = {
-            action = "open_float";
-            desc = "Line Diagnostics";
-          };
-          "[d" = {
-            action = "goto_next";
-            desc = "Next Diagnostic";
-          };
-          "]d" = {
-            action = "goto_prev";
-            desc = "Previous Diagnostic";
-          };
-        };
-      };
+  diagnostic.settings = {
+    underline = true;
+    update_in_insert = false;
+    virtual_text = {
+      spacing = 4;
+      source = "if_many";
+      prefix = "●";
     };
+    severity_sort = true;
+    signs.text.__raw = ''
+      {
+        [vim.diagnostic.severity.ERROR] = " ",
+        [vim.diagnostic.severity.WARN] = " ",
+        [vim.diagnostic.severity.HINT] = " ",
+        [vim.diagnostic.severity.INFO] = " ",
+      }
+    '';
   };
 
-  extraConfigLua = ''
-    local _border = "rounded"
-
-    vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
-      config = vim.tbl_extend("force", config or {}, { border = _border })
-      return vim.lsp.handlers.hover(err, result, ctx, config)
-    end
-
-    vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
-      config = vim.tbl_extend("force", config or {}, { border = _border })
-      return vim.lsp.handlers.signature_help(err, result, ctx, config)
-    end
-
-    vim.diagnostic.config({
-      underline = true,
-      update_in_insert = false,
-      virtual_text = {
-        spacing = 4,
-        source = "if_many",
-        prefix = "●",
-      },
-      severity_sort = true,
-      float = {
-        border = _border,
-      },
-      signs = {
-        text = {
-          [vim.diagnostic.severity.ERROR] = " ",
-          [vim.diagnostic.severity.WARN] = " ",
-          [vim.diagnostic.severity.HINT] = " ",
-          [vim.diagnostic.severity.INFO] = " ",
-        },
-      },
-    })
-
-    -- Elixir Expert language server setup from dotfiles
-    local configs = require("lspconfig.configs")
-    if not configs.expert then
-      configs.expert = {
-        default_config = {
-          cmd = { "expert" },
-          filetypes = { "elixir", "eelixir", "heex", "surface" },
-          root_dir = require("lspconfig.util").root_pattern("mix.exs", ".git"),
-          settings = {},
-        },
-      }
-    end
-    require("lspconfig").expert.setup({
-      cmd = { "expert" },
-      filetypes = { "elixir", "eelixir", "heex", "surface" },
-      root_dir = require("lspconfig.util").root_pattern("mix.exs", ".git"),
-      settings = {},
-    })
-  '';
+  # Diagnostics also come from linters, so these are global rather than LSP-only
+  keymaps = [
+    {
+      mode = "n";
+      key = "<leader>cd";
+      action.__raw = "function() vim.diagnostic.open_float() end";
+      options.desc = "Line Diagnostics";
+    }
+    (jump "]d" "1" "nil" "Next Diagnostic")
+    (jump "[d" "-1" "nil" "Prev Diagnostic")
+    (jump "]e" "1" "vim.diagnostic.severity.ERROR" "Next Error")
+    (jump "[e" "-1" "vim.diagnostic.severity.ERROR" "Prev Error")
+    (jump "]w" "1" "vim.diagnostic.severity.WARN" "Next Warning")
+    (jump "[w" "-1" "vim.diagnostic.severity.WARN" "Prev Warning")
+  ];
 }

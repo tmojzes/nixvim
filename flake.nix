@@ -1,5 +1,5 @@
 {
-  description = "A nixvim configuration";
+  description = "A LazyVim-inspired Nixvim configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -23,36 +23,43 @@
       ];
 
       perSystem = {
+        pkgs,
         system,
         ...
       }: let
-        pkgs = import inputs.nixpkgs {
+        nixvimConfig = nixvim.lib.evalNixvim {
           inherit system;
-          config.allowUnfree = true;
+          modules = [./config];
+          extraSpecialArgs = {inherit inputs;};
         };
-        nixvimLib = nixvim.lib.${system};
-        nixvim' = nixvim.legacyPackages.${system};
-        nixvimModule = {
-          inherit pkgs;
-          module = {
-            imports = [./config];
-            nixpkgs.source = inputs.nixpkgs;
-          };
-          # You can use `extraSpecialArgs` to pass additional arguments to your module files
-          extraSpecialArgs = {
-            inherit inputs;
-          };
-        };
-        nvim = nixvim'.makeNixvimWithModule nixvimModule;
+        nvim = nixvimConfig.config.build.package;
       in {
+        # `nix run .` starts nixvim
+        packages.default = nvim;
+
         checks = {
-          # Run `nix flake check .` to verify that your config is not broken
-          default = nixvimLib.check.mkTestDerivationFromNixvimModule nixvimModule;
+          # Builds the config and launches it, failing on startup errors or warnings
+          default = nixvimConfig.config.build.test;
+
+          format = pkgs.runCommand "check-format" {nativeBuildInputs = [pkgs.alejandra];} ''
+            alejandra --check ${./.}
+            touch $out
+          '';
         };
 
-        packages = {
-          # Lets you run `nix run .` to start nixvim
-          default = nvim;
+        # `nix fmt` passes no arguments, so default to the whole repo
+        formatter = pkgs.writeShellScriptBin "alejandra" ''
+          exec ${pkgs.lib.getExe pkgs.alejandra} "''${@:-.}"
+        '';
+
+        devShells.default = pkgs.mkShell {
+          packages = [
+            nvim
+            pkgs.alejandra
+            pkgs.nixd
+            pkgs.statix
+            pkgs.deadnix
+          ];
         };
       };
     };

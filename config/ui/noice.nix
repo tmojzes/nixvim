@@ -25,6 +25,13 @@
           };
           view = "mini";
         }
+        {
+          filter = {
+            event = "notify";
+            find = "No information available";
+          };
+          opts.skip = true;
+        }
       ];
       lsp = {
         override = {

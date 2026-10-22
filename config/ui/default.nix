@@ -2,8 +2,8 @@
   imports = [
     ./bufferline.nix
     ./dropbar.nix
+    ./lualine.nix
     ./noice.nix
-    ./nvim-notify.nix
-    ./telescope.nix
+    ./snacks.nix
   ];
 }

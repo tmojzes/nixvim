@@ -18,21 +18,24 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
 
 ```
 .
-├── flake.nix              # Flake definitions, flake-parts config, checks & packages
-├── flake.lock             # Flake lockfile
-├── README.md              # Human-facing project overview
+├── flake.nix              # flake-parts: packages, checks (build test + format), formatter, devShell
+├── flake.lock
+├── README.md              # Human-facing overview
 ├── config/
-│   ├── default.nix        # Root module: imports submodules, sets extraPackages & performance
-│   ├── plugins.nix        # Primary plugins (Snacks.nvim, oil, grug-far, flash, gitsigns, etc.)
-│   ├── keys.nix           # Keybindings (LazyVim-style mnemonic leader mappings)
-│   ├── sets.nix           # Global Neovim options (tab stops, line numbers, clipboard, etc.)
-│   ├── colorscheme.nix    # Theme definitions (Gruvbox default, Catppuccin, Kanagawa, etc.)
-│   ├── ai/                # AI agent integrations (agentic.nvim)
-│   ├── completion/        # nvim-cmp autocompletion engine and sources
-│   ├── lsp/               # LSP servers, conform.nvim formatting, nvim-lint, trouble.nvim
-│   ├── snippets/          # Luasnip snippets configuration
-│   ├── treesitter/        # Treesitter highlighting and textobjects
-│   └── ui/                # UI components (bufferline, dropbar, noice, notify, telescope)
+│   ├── default.nix        # Root module: imports, shared extraPackages, performance, unfree allowlist
+│   ├── options.nix        # Global options, leader keys, OSC52 clipboard over SSH
+│   ├── keymaps.nix        # LazyVim core keymaps + which-key groups
+│   ├── colorscheme.nix    # Gruvbox (default) + extra themes
+│   ├── ai/                # agentic.nvim
+│   ├── completion/        # nvim-cmp (supertab)
+│   ├── snippets/          # LuaSnip + friendly-snippets
+│   ├── treesitter/        # Treesitter, context, ts-comments, textobject motions
+│   ├── lsp/               # Shared wiring: lspconfig + LSP keymaps, conform, nvim-lint, trouble
+│   ├── editor/            # flash, gitsigns, grug-far, mini.*, persistence, todo-comments, yanky, tmux
+│   ├── ui/                # Snacks (dashboard/picker/explorer/toggles/terminal), lualine, bufferline, noice, dropbar
+│   ├── dap/               # nvim-dap core + keymaps
+│   ├── test/              # neotest core + keymaps
+│   └── lang/              # One file per language: servers, formatters, linters, dap/neotest adapters, grammars
 ```
 
 ---
@@ -60,7 +63,7 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
   ```bash
   nix flake check --no-build
   ```
-- **Full flake check derivation**:
+- **Full flake check** (builds the config, launches it headless failing on startup errors/warnings, and checks formatting):
   ```bash
   nix flake check
   ```
@@ -74,9 +77,10 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
   ```
 
 ### Formatting & Flake Maintenance
+- **Dev shell** (nvim, alejandra, nixd, statix, deadnix): `nix develop` or `direnv allow`
 - **Format Nix files**:
   ```bash
-  nix run nixpkgs#alejandra -- flake.nix config/
+  nix fmt
   ```
 - **Update flake inputs**:
   ```bash
@@ -97,13 +101,14 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
 
 2. **Custom / Third-Party Plugins**:
    - If a plugin is packaged in `pkgs.vimPlugins`, add it to `extraPlugins = with pkgs.vimPlugins; [ ... ];`.
-   - If a plugin is not in nixpkgs, package it using `pkgs.vimUtils.buildVimPlugin` with `pkgs.fetchFromGitHub` (as done in `config/ai/agentic.nix` and `config/colorscheme.nix`).
+   - If a plugin is not in nixpkgs, package it using `pkgs.vimUtils.buildVimPlugin` with `pkgs.fetchFromGitHub` (as done in `config/ai/agentic.nix`).
    - Use `extraConfigLua` for plugin-specific Lua setup when native options are insufficient.
 
 3. **Hermetic Dependencies & External Binaries**:
    - Never assume tools are installed globally on the user's system.
-   - Formatters (e.g., `stylua`, `alejandra`, `ruff`, `shfmt`), linters (e.g., `codespell`), and CLI utilities (`fd`, `ripgrep`) must be listed in `extraPackages` inside `config/default.nix`.
-   - Language servers should be enabled in `config/lsp/lsp.nix`. If a custom package is required, specify `package = pkgs.<server-package>;`.
+   - Language support lives in `config/lang/<language>.nix`: enable servers with the top-level `lsp.servers.<name>` option (set `package` when nixvim has none), and add formatters/linters to `plugins.conform-nvim.settings.formatters_by_ft` / `plugins.lint.lintersByFt`; their packages are installed by `autoInstall`.
+   - Other binaries go in `extraPackages` of the module that needs them; shared CLI tools (`rg`, `fd`, `codespell`, `lazygit`) are in `config/default.nix`.
+   - Project toolchains that must match the project version (`terraform`, `kubectl`, `rust-analyzer`) go in `extraPackagesAfter`, so a version on the user's `PATH` wins.
 
 4. **Module Organization**:
    - Every directory inside `config/` should have a `default.nix` that aggregates and imports submodules.
@@ -119,10 +124,10 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
 
 - **Nix Code Style**: Two-space indentation, idiomatic Nix syntax, formatted via `alejandra`.
 - **Git Commit Messages**: Follow Conventional Commits format:
-  - `feat: ...` or `feat(<scope>): ...` (e.g., `feat(lsp): add elixirls configuration`)
+  - `feat: ...` or `feat(<scope>): ...` (e.g., `feat(lang): add terraform support`)
   - `fix: ...` or `fix(<scope>): ...`
   - `chore: ...` or `chore(<scope>): ...`
 - **Verification Requirement**: Always verify your changes before completing a task by running:
-  1. `nix flake check --no-build`
-  2. `nix build .`
-  3. `./result/bin/nvim --headless -c "qa"`
+  1. `nix fmt`
+  2. `nix flake check`
+  3. `nix run . -- --headless -c "qa"`

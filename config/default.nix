@@ -1,45 +1,46 @@
-{pkgs, ...}: {
-  # Import all your configuration modules here
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
-    ./plugins.nix
+    ./options.nix
+    ./keymaps.nix
     ./colorscheme.nix
-    ./keys.nix
-    ./sets.nix
-    ./lsp
+    ./ai
     ./completion
     ./snippets
-    ./ui
     ./treesitter
-    ./ai
+    ./lsp
+    ./editor
+    ./ui
+    ./dap
+    ./test
+    ./lang
   ];
 
-  extraPlugins = with pkgs.vimPlugins; [
-    symbols-outline-nvim
-  ];
+  # flake.nix makes nixvim follow our nixpkgs input
+  nixpkgs.source = inputs.nixpkgs;
+
+  # terraform is BSL (`terraform fmt`); cmp-emoji has no license in nixpkgs
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["cmp-emoji" "terraform"];
 
   luaLoader.enable = true;
 
-  performance = {
-    byteCompileLua = {
-      enable = true;
-      configs = true;
-      initLua = true;
-      plugins = true;
-      nvimRuntime = true;
-    };
+  performance.byteCompileLua = {
+    enable = true;
+    configs = true;
+    initLua = true;
+    plugins = true;
+    nvimRuntime = true;
   };
 
+  # Shared CLI tools; language-specific tools live in ./lang
   extraPackages = with pkgs; [
     codespell
-    stylua
-    shfmt
-    shellcheck
-    ruff
-    isort
-    alejandra
-    ripgrep
     fd
-    xmlstarlet
-    buf
+    lazygit
+    ripgrep
   ];
 }
