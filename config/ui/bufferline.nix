@@ -15,8 +15,8 @@ in {
       right_mouse_command.__raw = "function(n) Snacks.bufdelete(n) end";
       diagnostics_indicator.__raw = ''
         function(_, _, diag)
-          local ret = (diag.error and " " .. diag.error .. " " or "")
-            .. (diag.warning and " " .. diag.warning or "")
+          local ret = (diag.error and " " .. diag.error .. " " or "")
+            .. (diag.warning and " " .. diag.warning or "")
           return vim.trim(ret)
         end
       '';

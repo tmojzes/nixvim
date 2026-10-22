@@ -27,8 +27,7 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
 │   ├── keymaps.nix        # LazyVim core keymaps + which-key groups
 │   ├── colorscheme.nix    # Gruvbox (default) + extra themes
 │   ├── ai/                # agentic.nvim
-│   ├── completion/        # nvim-cmp (supertab)
-│   ├── snippets/          # LuaSnip + friendly-snippets
+│   ├── completion/        # blink.cmp + friendly-snippets + emoji
 │   ├── treesitter/        # Treesitter, context, ts-comments, textobject motions
 │   ├── lsp/               # Shared wiring: lspconfig + LSP keymaps, conform, nvim-lint, trouble
 │   ├── editor/            # flash, gitsigns, grug-far, mini.*, persistence, todo-comments, yanky, tmux

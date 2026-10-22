@@ -14,10 +14,10 @@
           {
             __unkeyed-1 = "diagnostics";
             symbols = {
-              error = " ";
-              warn = " ";
-              info = " ";
-              hint = " ";
+              error = " ";
+              warn = " ";
+              info = " ";
+              hint = " ";
             };
           }
           {
@@ -38,9 +38,9 @@
           {
             __unkeyed-1 = "diff";
             symbols = {
-              added = " ";
-              modified = " ";
-              removed = " ";
+              added = " ";
+              modified = " ";
+              removed = " ";
             };
           }
           "😄"
@@ -48,7 +48,7 @@
         lualine_y = ["progress" "location"];
         lualine_z = [
           {
-            __raw = ''function() return " " .. os.date("%R") end'';
+            __raw = ''function() return " " .. os.date("%R") end'';
           }
         ];
       };

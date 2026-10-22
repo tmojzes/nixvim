@@ -9,7 +9,7 @@ nix run github:<owner>/nixvim   # or `nix run .` from a checkout
 ## Features
 
 - **UI**: Gruvbox, Snacks.nvim dashboard / picker / explorer / notifier / terminal, lualine, bufferline, noice, dropbar, which-key
-- **Editing**: nvim-cmp with supertab and LuaSnip, mini.ai / surround / pairs / move / comment, flash, yanky, grug-far, todo-comments, persistence, gitsigns, tmux navigation
+- **Editing**: blink.cmp with friendly-snippets and emoji, mini.ai / surround / pairs / move / comment, flash, yanky, grug-far, todo-comments, persistence, gitsigns, tmux navigation
 - **Languages** (`config/lang/`): Kubernetes (yamlls + SchemaStore + CRD schema detection, Helm), JS/TS (ts_ls, oxlint, oxfmt), Go, Rust (rustaceanvim, crates), Python (pyright, ruff, venv-selector), C/C++ (clangd), Ansible, Bash, Terraform and Nix
 - **Debugging and tests**: nvim-dap + dap-ui (delve, debugpy, codelldb) and neotest (Go, Python, Rust)
 - **AI**: [agentic.nvim](https://github.com/carlos-algms/agentic.nvim)

@@ -1,6 +1,8 @@
 {
   plugins.mini = {
     enable = true;
+    # mini.icons also serves plugins that expect nvim-web-devicons (bufferline, dropbar, ...)
+    mockDevIcons = true;
     modules = {
       # Textobjects: af/if, ac/ic, ao/io (blocks), aa/ia (arguments), at/it (tags), au/iu (calls)
       ai = {
@@ -21,6 +23,7 @@
         };
       };
       comment = {};
+      icons = {};
       indentscope = {
         symbol = "│";
         options.try_as_border = true;
@@ -45,6 +48,12 @@
         "trouble"
       ];
       callback.__raw = "function() vim.b.miniindentscope_disable = true end";
+    }
+    {
+      # The dashboard is drawn before its FileType event, so disable it here too
+      event = "User";
+      pattern = "SnacksDashboardOpened";
+      callback.__raw = "function(data) vim.b[data.buf].miniindentscope_disable = true end";
     }
   ];
 }

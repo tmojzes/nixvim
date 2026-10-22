@@ -10,7 +10,6 @@
     ./colorscheme.nix
     ./ai
     ./completion
-    ./snippets
     ./treesitter
     ./lsp
     ./editor
@@ -23,8 +22,8 @@
   # flake.nix makes nixvim follow our nixpkgs input
   nixpkgs.source = inputs.nixpkgs;
 
-  # terraform is BSL (`terraform fmt`); cmp-emoji has no license in nixpkgs
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["cmp-emoji" "terraform"];
+  # terraform is BSL; it is the only unfree package (`terraform fmt`)
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["terraform"];
 
   luaLoader.enable = true;
 

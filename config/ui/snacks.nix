@@ -52,13 +52,13 @@ in {
           '';
           keys = [
             {
-              icon = " ";
+              icon = " ";
               key = "f";
               desc = "Find File";
               action = ":lua Snacks.dashboard.pick('files')";
             }
             {
-              icon = " ";
+              icon = " ";
               key = "n";
               desc = "New File";
               action = ":ene | startinsert";
@@ -70,31 +70,31 @@ in {
               action = ":lua Snacks.picker.projects()";
             }
             {
-              icon = " ";
+              icon = " ";
               key = "g";
               desc = "Find Text";
               action = ":lua Snacks.dashboard.pick('live_grep')";
             }
             {
-              icon = " ";
+              icon = " ";
               key = "r";
               desc = "Recent Files";
               action = ":lua Snacks.dashboard.pick('oldfiles')";
             }
             {
-              icon = " ";
+              icon = " ";
               key = "c";
               desc = "Config";
               action = ":lua OpenNixvimConfig()";
             }
             {
-              icon = " ";
+              icon = " ";
               key = "s";
               desc = "Restore Session";
               action = ":lua require('persistence').load()";
             }
             {
-              icon = " ";
+              icon = " ";
               key = "q";
               desc = "Quit";
               action = ":qa";
