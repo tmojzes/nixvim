@@ -121,7 +121,7 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
 
 ## 5. Coding & Contribution Conventions
 
-- **Nix Code Style**: Two-space indentation, idiomatic Nix syntax, formatted via `alejandra`.
+- **Nix Code Style**: Two-space indentation, idiomatic Nix syntax. Always use `alejandra` to format Nix files (`nix fmt`); never use `nixfmt`, `nixpkgs-fmt`, or hand-formatting.
 - **Git Commit Messages**: Follow Conventional Commits format:
   - `feat: ...` or `feat(<scope>): ...` (e.g., `feat(lang): add terraform support`)
   - `fix: ...` or `fix(<scope>): ...`
