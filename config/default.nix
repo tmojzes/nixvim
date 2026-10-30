@@ -1,6 +1,5 @@
 {
   inputs,
-  lib,
   pkgs,
   ...
 }: {
@@ -21,9 +20,6 @@
 
   # flake.nix makes nixvim follow our nixpkgs input
   nixpkgs.source = inputs.nixpkgs;
-
-  # terraform is BSL; it is the only unfree package (`terraform fmt`)
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["terraform"];
 
   luaLoader.enable = true;
 

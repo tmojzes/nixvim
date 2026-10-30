@@ -14,7 +14,7 @@ nix run github:<owner>/nixvim   # or `nix run .` from a checkout
 - **Debugging and tests**: nvim-dap + dap-ui (delve, debugpy, codelldb) and neotest (Go, Python, Rust)
 - **AI**: [agentic.nvim](https://github.com/carlos-algms/agentic.nvim)
 
-Project toolchains (`go`, `cargo`/`rustc`, `terraform`, `kubectl`, `rust-analyzer`) are taken from your `PATH` or devshell first. `terraform`, `kubectl` and `rust-analyzer` are bundled only as fallbacks.
+Project toolchains (`go`, `cargo`/`rustc`, `tofu`, `kubectl`, `rust-analyzer`) are taken from your `PATH` or devshell first. `tofu` (OpenTofu), `kubectl` and `rust-analyzer` are bundled only as fallbacks.
 
 ## Development
 

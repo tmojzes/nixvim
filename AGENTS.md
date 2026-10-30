@@ -22,7 +22,7 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
 ├── flake.lock
 ├── README.md              # Human-facing overview
 ├── config/
-│   ├── default.nix        # Root module: imports, shared extraPackages, performance, unfree allowlist
+│   ├── default.nix        # Root module: imports, shared extraPackages, performance
 │   ├── options.nix        # Global options, leader keys, OSC52 clipboard over SSH
 │   ├── keymaps.nix        # LazyVim core keymaps + which-key groups
 │   ├── colorscheme.nix    # Gruvbox (default) + extra themes
@@ -107,7 +107,7 @@ This repository contains a standalone, modular **Nixvim** configuration packaged
    - Never assume tools are installed globally on the user's system.
    - Language support lives in `config/lang/<language>.nix`: enable servers with the top-level `lsp.servers.<name>` option (set `package` when nixvim has none), and add formatters/linters to `plugins.conform-nvim.settings.formatters_by_ft` / `plugins.lint.lintersByFt`; their packages are installed by `autoInstall`.
    - Other binaries go in `extraPackages` of the module that needs them; shared CLI tools (`rg`, `fd`, `codespell`, `lazygit`) are in `config/default.nix`.
-   - Project toolchains that must match the project version (`terraform`, `kubectl`, `rust-analyzer`) go in `extraPackagesAfter`, so a version on the user's `PATH` wins.
+   - Project toolchains that must match the project version (`tofu`, `kubectl`, `rust-analyzer`) go in `extraPackagesAfter`, so a version on the user's `PATH` wins.
 
 4. **Module Organization**:
    - Every directory inside `config/` should have a `default.nix` that aggregates and imports submodules.

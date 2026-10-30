@@ -10,12 +10,12 @@
 
     conform-nvim = {
       settings.formatters_by_ft = {
-        terraform = ["terraform_fmt"];
-        terraform-vars = ["terraform_fmt"];
-        tf = ["terraform_fmt"];
+        terraform = ["tofu_fmt"];
+        terraform-vars = ["tofu_fmt"];
+        tf = ["tofu_fmt"];
       };
-      # autoInstall would pick tenv; terraform itself is added below
-      autoInstall.overrides.terraform_fmt = null;
+      # opentofu itself is added below as a fallback
+      autoInstall.overrides.tofu_fmt = null;
     };
 
     treesitter.grammarPackages = with config.plugins.treesitter.package.builtGrammars; [
@@ -24,6 +24,6 @@
     ];
   };
 
-  # Fallback only: the project's terraform version wins
-  extraPackagesAfter = [pkgs.terraform];
+  # Fallback only: the project's tofu version wins
+  extraPackagesAfter = [pkgs.opentofu];
 }
