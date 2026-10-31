@@ -3,6 +3,9 @@
   pkgs,
   ...
 }: {
+  # Neovim detects *.h as cpp by default
+  globals.c_syntax_for_h = 1;
+
   lsp.servers.clangd = {
     enable = true;
     config.cmd = [
@@ -15,6 +18,9 @@
       "--fallback-style=llvm"
     ];
   };
+
+  # AST, memory layout, type hierarchy and symbol info views from clangd's off-spec extensions
+  plugins.clangd-extensions.enable = true;
 
   # codelldb debugs C, C++ and Rust (rustaceanvim picks it up from PATH).
   # Only the vscode-lldb extension is a Hydra job; its adapter output is never cached,
@@ -39,6 +45,18 @@
       key = "<leader>ch";
       action = "<cmd>LspClangdSwitchSourceHeader<cr>";
       options.desc = "Switch Source/Header (C/C++)";
+    }
+    {
+      mode = "n";
+      key = "<leader>cA";
+      action = "<cmd>ClangdAST<cr>";
+      options.desc = "AST (C/C++)";
+    }
+    {
+      mode = "n";
+      key = "<leader>cM";
+      action = "<cmd>ClangdMemoryUsage<cr>";
+      options.desc = "Memory Usage (C/C++)";
     }
   ];
 }
